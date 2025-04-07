@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme for light mode -->
+    <style name="Theme.折扣計算機" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Other theme attributes -->
+        <item name="backgroundColor">@color/background_color</item>
+        <item name="cardBackgroundColor">@color/card_background</item>
+        <item name="accentColor">@color/accent_color</item>
+        <item name="textPrimaryColor">@color/text_primary</item>
+        <item name="textHintColor">@color/text_hint</item>
+        <item name="buttonColor">@color/button_color</item>
+        <item name="resultBackgroundColor">@color/result_background</item>
+        <item name="inputTextColor">@color/input_text_color</item>
+        <item name="dividerColor">@color/divider_light</item>
+    </style>
+</resources>

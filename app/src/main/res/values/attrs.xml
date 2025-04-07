@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="backgroundColor" format="color" />
+    <attr name="cardBackgroundColor" format="color" />
+    <attr name="accentColor" format="color" />
+    <attr name="textPrimaryColor" format="color" />
+    <attr name="textHintColor" format="color" />
+    <attr name="buttonColor" format="color" />
+    <attr name="resultBackgroundColor" format="color" />
+    <attr name="inputTextColor" format="color" />
+    <attr name="dividerColor" format="color" />
+</resources>
