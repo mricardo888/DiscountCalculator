@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">折扣計算器</string>
-    <string name="originalPrice">原價</string>
-    <string name="enterOriginalPrice">輸入原價</string>
-    <string name="discounts">折扣方案</string>
-    <string name="results">比較結果</string>
-    <string name="calculate">計算</string>
-    <string name="clear">清除</string>
-
-    <!-- Discount type options in Chinese -->
+    <string name="app_name">Discount Calculator</string>
+    <string name="originalPrice">Original Price</string>
+    <string name="enterOriginalPrice">Enter original price</string>
+    <string name="discounts">Discount Options</string>
+    <string name="results">Comparison Results</string>
+    <string name="calculate">Calculate</string>
+    <string name="clear">Clear</string>
+    <string name="error_message">Please enter original price</string>
+    <string name="language">Language</string>
+    <string name="discount_1">Discount 1</string>
+    <string name="discount_2">Discount 2</string>
+    <string name="result_better_1">Result: Discount 1 is better (Save</string>
+    <string name="result_better_2">Result: Discount 2 is better (Save</string>
+    <string name="result_equal">Result: Both discounts are equal (Save</string>
+    <string name="savings">Savings:</string>
     <string-array name="options">
-        <item>百分比 (%)</item>
-        <item>直接減價 ($)</item>
+        <item>% off</item>
+        <item>$ off</item>
     </string-array>
 </resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">折扣計算器</string>
+    <string name="originalPrice">原價</string>
+    <string name="enterOriginalPrice">輸入原價</string>
+    <string name="discounts">折扣方案</string>
+    <string name="results">比較結果</string>
+    <string name="calculate">計算</string>
+    <string name="clear">清除</string>
+    <string name="error_message">請輸入原價</string>
+    <string name="language">語言</string>
+    <string name="discount_1">折扣1</string>
+    <string name="discount_2">折扣2</string>
+    <string name="result_better_1">結論: 折扣1 更優惠 (省</string>
+    <string name="result_better_2">結論: 折扣2 更優惠 (省</string>
+    <string name="result_equal">結論: 兩種折扣相等 (省</string>
+    <string name="savings">節省:</string>
+
+    <!-- Discount type options in Chinese -->
+    <string-array name="options">
+        <item>百分比 (%)</item>
+        <item>直接減價 ($)</item>
+    </string-array>
+</resources>

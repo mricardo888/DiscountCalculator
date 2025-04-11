@@ -1,33 +1,90 @@
 package com.ricardo.discountcalculator;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.DecimalFormat;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
+    private static final String TAG = "MainActivity";
     private TextInputEditText originalPriceInput, discount1Input, discount2Input;
     private AutoCompleteTextView discount1TypeView, discount2TypeView;
     private TextView result1TextView, result2TextView, result3TextView;
-    private View cardResults; // Reference to card_results view
+    private View cardResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Make sure the action bar is showing
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setTitle(getString(R.string.app_name));
+        } else {
+            Log.e(TAG, "ActionBar is null - check your theme");
+        }
+
         setupViews();
         setupDiscountTypeDropdowns();
         setupCalculateButton();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        // Make sure the language menu item is visible
+        MenuItem languageItem = menu.findItem(R.id.menu_language);
+        if (languageItem != null) {
+            languageItem.setVisible(true);
+            languageItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            Log.d(TAG, "Language menu item configured to be always visible");
+        } else {
+            Log.e(TAG, "Could not find language menu item");
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Additional check to ensure menu item is visible when menu is prepared
+        MenuItem languageItem = menu.findItem(R.id.menu_language);
+        if (languageItem != null) {
+            languageItem.setVisible(true);
+            languageItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_language) {
+            // Open language selection activity
+            Log.d(TAG, "Language menu item clicked");
+            Intent intent = new Intent(this, LanguageSelectionActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupViews() {
@@ -39,11 +96,11 @@ public class MainActivity extends AppCompatActivity {
         result1TextView = findViewById(R.id.result_1);
         result2TextView = findViewById(R.id.result_2);
         result3TextView = findViewById(R.id.result_3);
-        cardResults = findViewById(R.id.card_results); // Initialize card_results view
+        cardResults = findViewById(R.id.card_results);
     }
 
     private void setupDiscountTypeDropdowns() {
-        String[] items = {"折", "減"};
+        String[] items = getResources().getStringArray(R.array.options);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.dropdown_item, items);
 
         discount1TypeView.setAdapter(adapter);
@@ -93,29 +150,66 @@ public class MainActivity extends AppCompatActivity {
         if (discountText.isEmpty()) return null;
 
         double discountValue = Double.parseDouble(discountText);
-        boolean isPercentage = discountTypeView.getText().toString().contains("折");
-        double finalPrice = isPercentage ? calculatePercentageDiscount(originalPrice, discountValue) : originalPrice - discountValue;
+        String currentLanguage = LanguageManager.getLanguage(this);
+        String discountType = discountTypeView.getText().toString();
 
-        return new DiscountResult(finalPrice, originalPrice - finalPrice, isPercentage ? (int) discountValue + "折" : "$" + discountValue);
-    }
+        boolean isPercentage;
+        double finalPrice;
+        String description;
 
-    private double calculatePercentageDiscount(double originalPrice, double discount) {
-        return discount >= 10 ? originalPrice * (discount / 100.0) : originalPrice * (discount / 10.0);
+        if (currentLanguage.equals(LanguageManager.LANGUAGE_ENGLISH)) {
+            // English calculation logic
+            isPercentage = discountType.contains("%");
+            if (isPercentage) {
+                finalPrice = originalPrice * (1 - (discountValue / 100.0));
+                description = discountValue + "% off";
+            } else {
+                finalPrice = originalPrice - discountValue;
+                description = "$" + discountValue + " off";
+            }
+        } else {
+            // Chinese calculation logic
+            isPercentage = discountType.contains("折");
+            if (isPercentage) {
+                finalPrice = discountValue >= 10 ? originalPrice * (discountValue / 100.0) : originalPrice * (discountValue / 10.0);
+                description = (int) discountValue + "折";
+            } else {
+                finalPrice = originalPrice - discountValue;
+                description = "$" + discountValue;
+            }
+        }
+
+        return new DiscountResult(finalPrice, originalPrice - finalPrice, description);
     }
 
     private void displayResults(DiscountResult discount1, DiscountResult discount2, double originalPrice) {
         DecimalFormat currencyFormat = new DecimalFormat("$#,##0.00");
 
-        result1TextView.setText(discount1 != null ? "折扣1 (" + discount1.description + "): " + currencyFormat.format(discount1.finalPrice) : "");
-        result2TextView.setText(discount2 != null ? "折扣2 (" + discount2.description + "): " + currencyFormat.format(discount2.finalPrice) : "");
+        // Use resource strings instead of hardcoded text
+        if (discount1 != null) {
+            result1TextView.setText(getString(R.string.discount_1) + " (" + discount1.description + "): " +
+                    currencyFormat.format(discount1.finalPrice));
+        } else {
+            result1TextView.setText("");
+        }
+
+        if (discount2 != null) {
+            result2TextView.setText(getString(R.string.discount_2) + " (" + discount2.description + "): " +
+                    currencyFormat.format(discount2.finalPrice));
+        } else {
+            result2TextView.setText("");
+        }
 
         if (discount1 != null && discount2 != null) {
             if (discount1.finalPrice < discount2.finalPrice) {
-                result3TextView.setText("結論: 折扣1 更優惠 (省" + currencyFormat.format(discount1.savedAmount) + ")");
+                result3TextView.setText(getString(R.string.result_better_1) + " " +
+                        currencyFormat.format(discount1.savedAmount) + ")");
             } else if (discount2.finalPrice < discount1.finalPrice) {
-                result3TextView.setText("結論: 折扣2 更優惠 (省" + currencyFormat.format(discount2.savedAmount) + ")");
+                result3TextView.setText(getString(R.string.result_better_2) + " " +
+                        currencyFormat.format(discount2.savedAmount) + ")");
             } else {
-                result3TextView.setText("結論: 兩種折扣相等 (省" + currencyFormat.format(discount1.savedAmount) + ")");
+                result3TextView.setText(getString(R.string.result_equal) + " " +
+                        currencyFormat.format(discount1.savedAmount) + ")");
             }
         } else if (discount1 != null) {
             result3TextView.setText(getSavingsText(discount1, originalPrice));
@@ -125,11 +219,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getSavingsText(DiscountResult discount, double originalPrice) {
-        return "節省: " + new DecimalFormat("$#,##0.00").format(discount.savedAmount) + " (" + String.format("%.2f%%", (discount.savedAmount / originalPrice) * 100) + ")";
+        return getString(R.string.savings) + " " + new DecimalFormat("$#,##0.00").format(discount.savedAmount) +
+                " (" + String.format("%.2f%%", (discount.savedAmount / originalPrice) * 100) + ")";
     }
 
     private void showToast() {
-        Toast.makeText(this, "請輸入原價", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.error_message), Toast.LENGTH_SHORT).show();
     }
 
     private static class DiscountResult {

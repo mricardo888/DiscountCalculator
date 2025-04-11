@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme -->
+    <style name="Theme.DiscountCalculator" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/accent_color</item>
+        <item name="colorPrimaryDark">@color/result_background</item>
+        <item name="colorAccent">@color/accent_color</item>
+
+        <!-- Ensure ActionBar is shown -->
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+
+        <!-- Custom attributes -->
+        <item name="backgroundColor">@color/background_color</item>
+        <item name="cardBackgroundColor">@color/card_background</item>
+        <item name="accentColor">@color/accent_color</item>
+        <item name="textPrimaryColor">@color/text_primary</item>
+        <item name="textHintColor">@color/text_hint</item>
+        <item name="buttonColor">@color/button_color</item>
+        <item name="resultBackgroundColor">@color/result_background</item>
+        <item name="inputTextColor">@color/input_text_color</item>
+        <item name="dividerColor">@color/divider_light</item>
+    </style>
+</resources>
